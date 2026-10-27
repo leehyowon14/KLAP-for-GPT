@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "klap",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "개인 KLAP-core 인스턴스의 KLAS 학습 정보, 수강 작업, 앱 화면과 새 콘텐츠 이벤트를 ChatGPT에 연결합니다.",
   "extensions": {
     "com.openai": {

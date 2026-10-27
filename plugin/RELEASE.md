@@ -3,9 +3,9 @@
 2026-10-27에 Plugin Creator로 사용자 계정에 저장한 비공개 플러그인이다.
 
 - 이름: KLAP
-- 버전: `0.1.1`
+- 버전: `0.1.2`
 - Plugin ID: `plugins_6ae05a8b1af08191a7b593f119b7f914`
-- Release ID: `pluginrel_6ae06c7f70b88191991398c387407ad3`
+- Release ID: `pluginrel_6ae084ef6b48819180d032a1c964e419`
 - [플러그인 열기](https://chatgpt.com/plugins/plugins_6ae05a8b1af08191a7b593f119b7f914)
 - MCP: `https://klap.leehyowon14.dev/mcp`
 
@@ -32,3 +32,9 @@ KLAP_mac의 `KLAP-Mark.svg`와 `KLAP-Sparks.svg`를 조합한 로고로 대표 �
 전체 파일 목록 보존을 `get_plugin_files`로 확인했다. 설치된 호스트의 아이콘 캐시 갱신은 별도다.
 
 웹 앱의 Tossface 아이콘은 서버의 자체 포함 UI 번들에 있으며 플러그인 패키지에는 포함하지 않는다.
+
+## 0.1.2 투명 로고
+
+대표 로고를 둘러싼 배경 rect를 제거하고 KLAP_mac의 Mark·Sparks 경로만 남겼다.
+기존 Plugin ID·MCP·스킬·프롬프트·비공개 범위는 유지했다.
+저장 후 아이콘 원본 바이트와 매니페스트 및 전체 파일 목록 보존을 재조회했다.
