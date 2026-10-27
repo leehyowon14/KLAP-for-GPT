@@ -331,7 +331,7 @@ function App() {
             KLAP<small>나의 캠퍼스</small>
           </span>
         </button>
-        <div className="nav-label">WORKSPACE</div>
+        <div className="nav-label">나의 수업</div>
         <nav aria-label="메인 메뉴">
           {nav.map(([id, label, icon]) => (
             <button
@@ -352,7 +352,7 @@ function App() {
           <div className="core-mark">
             <span className={`dot ${connected ? "online" : ""}`} />
             {connected ? "KLAS 연결됨" : "KLAS 연결 필요"}
-            <small>Powered by KLAP-core</small>
+            <small>수업의 흐름을 한곳에서</small>
           </div>
           <button
             className={view === "settings" ? "active" : ""}
@@ -405,7 +405,7 @@ function App() {
           <div className="page-heading">
             <div>
               <span className="eyebrow">
-                {view === "home" ? "YOUR DAY AT A GLANCE" : "MY CAMPUS"}
+                {view === "home" ? "나의 캠퍼스" : "캠퍼스 라이프"}
               </span>
               <h1>{view === "home" ? "오늘, 챙겨야 할 것들" : heading}</h1>
               <p>
@@ -507,7 +507,7 @@ function App() {
                         <Stat
                           label="진행 중인 수강"
                           value={activeJobs.length}
-                          note="실제 서버 상태"
+                          note="대기 · 수강 중"
                           icon="play"
                         />
                         <Stat
@@ -1032,7 +1032,7 @@ function App() {
           <footer>
             <AssetCredits />
             <span>
-              <span className="dot" /> KLAP-core · 개인 학습 공간
+              <span className="dot" /> KLAP · 나의 학습 공간
             </span>
             {updated && <span>{formatDate(updated)} 조회</span>}
           </footer>
@@ -1117,7 +1117,9 @@ function Stat({
         {label}
         <Icon name={icon} />
       </span>
-      <strong>{value}</strong>
+      <strong className={typeof value === "number" ? "" : "stat-text"}>
+        {value}
+      </strong>
       <small>{note}</small>
     </div>
   );
