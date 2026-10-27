@@ -11,6 +11,7 @@ const bundle = await build({
   target: "es2022",
   define: { "process.env.NODE_ENV": '"production"' },
   legalComments: "none",
+  loader: { ".svg": "dataurl", ".txt": "text" },
 });
 const js = bundle.outputFiles
   .find((f) => f.path.endsWith(".js"))
