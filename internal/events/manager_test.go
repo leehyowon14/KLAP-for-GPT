@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -92,6 +93,31 @@ func TestInactiveMonitoringDoesNotRequireAccount(t *testing.T) {
 	mustPoll(t, m)
 	if source.reads != 0 {
 		t.Fatal("inactive monitoring fetched course content")
+	}
+}
+func TestSubscriptionQuotaRecoversAfterExpiration(t *testing.T) {
+	m, _, _, now, _, _ := harness(t)
+	ctx := context.Background()
+	request := subscription()
+	ttl := int64(time.Minute / time.Millisecond)
+	request.TTLMS = &ttl
+	for i := 0; i < 64; i++ {
+		request.Arguments.CourseID = fmt.Sprintf("course-%d", i)
+		if _, err := m.Subscribe(ctx, "owner", request); err != nil {
+			t.Fatal(err)
+		}
+	}
+	request.Arguments.CourseID = "new-course"
+	if _, err := m.Subscribe(ctx, "owner", request); err == nil {
+		t.Fatal("active subscription limit was not enforced")
+	}
+	*now = now.Add(time.Minute)
+	if _, err := m.Subscribe(ctx, "owner", request); err != nil {
+		t.Fatalf("expired subscriptions exhausted quota: %v", err)
+	}
+	status, err := m.Status()
+	if err != nil || status.Active != 1 {
+		t.Fatalf("unexpected active subscriptions: %+v %v", status, err)
 	}
 }
 func TestBaselineAtomicOutboxRestartAndStableRetry(t *testing.T) {

@@ -229,6 +229,17 @@ func (m *Manager) Subscribe(ctx context.Context, principal string, request Subsc
 		if err != nil {
 			return err
 		}
+		// Retired callbacks must not permanently consume the subscription quota.
+		for retiredID, sub := range v.Subscriptions {
+			if retiredID != id && !active(sub, now) {
+				delete(v.Subscriptions, retiredID)
+				for key, item := range v.Outbox {
+					if item.SubscriptionID == retiredID {
+						delete(v.Outbox, key)
+					}
+				}
+			}
+		}
 		old, exists := v.Subscriptions[id]
 		if !exists && len(v.Subscriptions) >= 64 {
 			return errors.New("subscription limit reached")
