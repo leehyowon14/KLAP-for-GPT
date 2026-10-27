@@ -53,14 +53,14 @@ h1 {
 }
 p {
   font-size: 14px;
-  color: #6b7684;
+  color: #64707e;
   line-height: 1.8;
   word-break: keep-all;
   margin: 0 0 28px;
 }
 small {
   display: block;
-  color: #6b7684;
+  color: #64707e;
   font-size: 12px;
   line-height: 1.8;
   overflow-wrap: anywhere;
@@ -88,7 +88,7 @@ input {
   min-height: 50px;
 }
 input:focus {
-  border-color: #df4c48;
+  border-color: #d23f3b;
 }
 button {
   font: inherit;
@@ -99,7 +99,7 @@ button {
   padding: 14px 22px;
   border: 0;
   border-radius: 14px;
-  background: #df4c48;
+  background: #d23f3b;
   color: white;
   cursor: pointer;
   transition: background 0.15s;
@@ -109,7 +109,7 @@ button:hover {
 }
 button.secondary {
   background: #f0f2f5;
-  color: #6b7684;
+  color: #64707e;
 }
 button.secondary:hover {
   background: #e5e8ec;
@@ -132,7 +132,7 @@ a:focus-visible {
   text-align: center;
   font-size: 12px;
   margin: 24px 0 0;
-  color: #8b95a1;
+  color: #64707e;
 }
 @media (max-width: 480px) {
   body {
