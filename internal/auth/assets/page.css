@@ -1,0 +1,156 @@
+:root {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+  color: #191f28;
+  background: #f5f6f8;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 64px 24px;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+main {
+  width: min(440px, 100%);
+  background: #fff;
+  border-radius: 28px;
+  padding: 38px 36px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #191f28;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.7px;
+  margin-bottom: 38px;
+}
+.brand img {
+  width: 48px;
+  height: 48px;
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  color: #be3834;
+  margin: 0 0 10px;
+}
+h1 {
+  font-size: 28px;
+  font-weight: 750;
+  letter-spacing: -1px;
+  line-height: 1.4;
+  margin: 0 0 14px;
+  word-break: keep-all;
+}
+p {
+  font-size: 14px;
+  color: #6b7684;
+  line-height: 1.8;
+  word-break: keep-all;
+  margin: 0 0 28px;
+}
+small {
+  display: block;
+  color: #6b7684;
+  font-size: 12px;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+  padding: 16px;
+  background: #f5f6f8;
+  border-radius: 14px;
+  margin: 24px 0;
+}
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 24px 0;
+}
+input {
+  display: block;
+  width: 100%;
+  padding: 15px 16px;
+  font: inherit;
+  color: #191f28;
+  background: #f5f6f8;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  margin-top: 10px;
+  min-height: 50px;
+}
+input:focus {
+  border-color: #df4c48;
+}
+button {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  min-height: 50px;
+  width: 100%;
+  padding: 14px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: #df4c48;
+  color: white;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+button:hover {
+  background: #c63e3a;
+}
+button.secondary {
+  background: #f0f2f5;
+  color: #6b7684;
+}
+button.secondary:hover {
+  background: #e5e8ec;
+}
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #df4c4870;
+  outline-offset: 4px;
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 28px;
+}
+.actions button {
+  flex: 1;
+}
+.footnote {
+  text-align: center;
+  font-size: 12px;
+  margin: 24px 0 0;
+  color: #8b95a1;
+}
+@media (max-width: 480px) {
+  body {
+    padding: 28px 16px;
+  }
+  main {
+    padding: 30px 24px;
+    border-radius: 24px;
+  }
+  .brand {
+    margin-bottom: 30px;
+  }
+  h1 {
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

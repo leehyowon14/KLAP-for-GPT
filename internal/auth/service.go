@@ -480,10 +480,6 @@ func (s *Service) logout(w http.ResponseWriter, r *http.Request) {
 func render(w http.ResponseWriter, source string, v any) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
 	_ = template.Must(template.New("page").Parse(source)).Execute(w, v)
 }
-
-const pageStyle = `<meta name="viewport" content="width=device-width,initial-scale=1"><style>body{font:16px system-ui;max-width:480px;margin:12vh auto;padding:24px;color:#183b37;background:#f5f7f4}label{display:block;margin:24px 0}input{display:block;box-sizing:border-box;width:100%;padding:12px;font:inherit;border:1px solid #9caeaa;border-radius:8px;margin-top:8px}button{font:inherit;padding:12px 24px;border:0;border-radius:8px;background:#1c6256;color:white;cursor:pointer}p,small{line-height:1.7;overflow-wrap:anywhere}</style>`
-const loginPage = `<!doctype html><html lang="ko"><title>KLAP 연결</title>` + pageStyle + `<h1>KLAP에 연결</h1>{{if .Setup}}<p>이 개인 인스턴스의 소유자 암호를 설정하세요. 설치 토큰은 데이터 폴더의 bootstrap.token 파일에 있습니다.</p><form method="post" action="/setup"><label>설치 토큰<input name="bootstrap" type="password" required autocomplete="off"></label>{{else}}<p>이 인스턴스의 소유자 암호를 입력하세요.</p><form method="post" action="/login">{{end}}<input name="next" type="hidden" value="{{.Next}}"><label>소유자 암호<input name="password" type="password" required minlength="12" maxlength="72" autocomplete="current-password"></label><button>계속</button></form></html>`
-const consentPage = `<!doctype html><html lang="ko"><title>KLAP 연결 허용</title>` + pageStyle + `<h1>KLAP 연결 허용</h1><p>이 클라이언트가 수업 정보를 조회하고, 요청한 수강·동기화 작업과 새 콘텐츠 모니터링을 실행할 수 있습니다.</p><small>클라이언트: {{.Client}}<br>돌아갈 주소: {{.Redirect}}</small><form method="post" action="{{.Action}}"><input type="hidden" name="csrf" value="{{.CSRF}}"><p><button name="decision" value="allow">연결 허용</button> <button name="decision" value="deny">취소</button></p></form></html>`
