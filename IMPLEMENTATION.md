@@ -82,3 +82,15 @@ KLAP_mac의 첫 실행에서 `firstClickOpened`가 한 번 false였으며 재실
 - Mac 또는 hybrid를 사용할 경우 LaunchAgent 설치, Keychain 페어링, EventKit 권한과
   실제 캘린더·미리알림 충돌 처리 확인. 현재 운영 서버에는 Apple 도구를 노출하지 않는다.
 - 실제 강의 수강은 사용자가 선택하여 요청한 경우에만 별도 검증.
+
+## 최초 설정의 Origin 오류 수정
+
+사용자 최초 설정 중 `invalid origin`이 발생했다. 배포된 `Referrer-Policy: no-referrer`가
+HTML 폼 POST의 Origin을 `null`로 바꾸는 동작과 엄격한 출처 검사가 충돌했다.
+Safari의 암호 없는 진단 폼으로 수정 전 `Origin: null`, 수정 후 정상 loopback Origin을
+각각 관찰했다. 헤더를 `same-origin`으로 변경하고 기존 출처·CSRF 검증은 유지했다.
+
+HTTPS 프록시의 HTTP 전달과 공개 Host를 재현하는 회귀 테스트를 추가했다. 정상 HTTPS
+출처가 폼 검증까지 도달하는 것과 null·누락·다른 도메인·하위 도메인·HTTP 출처가 계속
+거절되는 것을 확인했다. 수정 전 회귀 실패와 수정 후 auth/server race 테스트 통과를
+확인했으며, 운영 이미지의 전체 Go 테스트도 통과했다. 실제 소유자 암호 입력은 사용자에게 맡긴다.
