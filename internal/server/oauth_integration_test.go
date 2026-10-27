@@ -99,3 +99,50 @@ func TestOwnerConsentToAuthenticatedMCPAndRevocation(t *testing.T) {
 		t.Fatal("revoked token still calls MCP", rec.Code)
 	}
 }
+
+func TestOwnerFormOriginBehindHTTPSProxy(t *testing.T) {
+	app, db, key := testApp(t)
+	authentication, err := auth.New(db, app.PublicURL, key, strings.Repeat("b", 40))
+	if err != nil {
+		t.Fatal(err)
+	}
+	handler := app.Handler(authentication, fakeBackend{})
+	public, _ := url.Parse(app.PublicURL)
+	proxyRequest := func(method, path, body string) *http.Request {
+		// nginx terminates HTTPS and forwards HTTP with the public Host.
+		req := httptest.NewRequest(method, "http://127.0.0.1:3030"+path, strings.NewReader(body))
+		req.Host = public.Host
+		req.Header.Set("X-Forwarded-Proto", "https")
+		return req
+	}
+	page := httptest.NewRecorder()
+	handler.ServeHTTP(page, proxyRequest("GET", "/login", ""))
+	if page.Code != http.StatusOK || page.Header().Get("Referrer-Policy") != "same-origin" {
+		t.Fatalf("auth form must retain its same-origin POST Origin: status=%d policy=%q", page.Code, page.Header().Get("Referrer-Policy"))
+	}
+	for _, tc := range []struct {
+		name, origin string
+		want         int
+	}{
+		{"public HTTPS origin", app.PublicURL, http.StatusBadRequest},
+		{"opaque origin", "null", http.StatusForbidden},
+		{"missing origin", "", http.StatusForbidden},
+		{"unrelated origin", "https://evil.example", http.StatusForbidden},
+		{"sibling host", "https://other." + public.Host, http.StatusForbidden},
+		{"HTTP downgrade", "http://" + public.Host, http.StatusForbidden},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			// A short password cannot create an owner. HTTP 400 here proves the
+			// legitimate request reached form validation instead of Origin denial.
+			req := proxyRequest("POST", "/setup", url.Values{"password": {"short"}}.Encode())
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+			req.Header.Set("Origin", tc.origin)
+			req.Header.Set("Sec-Fetch-Site", "same-origin")
+			rec := httptest.NewRecorder()
+			handler.ServeHTTP(rec, req)
+			if rec.Code != tc.want {
+				t.Fatalf("status=%d want=%d body=%s", rec.Code, tc.want, rec.Body.String())
+			}
+		})
+	}
+}

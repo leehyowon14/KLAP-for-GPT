@@ -94,7 +94,10 @@ func (a *App) Handler(authentication *auth.Service, accounts AccountController) 
 	protected := http.NewCrossOriginProtection().Handler(mux)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
-		w.Header().Set("Referrer-Policy", "no-referrer")
+		// no-referrer turns HTML form POST origins into "null" in browsers,
+		// conflicting with the owner setup/login/consent origin checks. Keep
+		// same-origin form metadata while omitting referrers to other origins.
+		w.Header().Set("Referrer-Policy", "same-origin")
 		if r.URL.Path != "/health" && !strings.EqualFold(r.Host, public.Host) {
 			http.Error(w, "invalid host", 403)
 			return
