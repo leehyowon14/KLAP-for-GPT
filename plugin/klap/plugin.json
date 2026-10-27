@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "klap",
+  "version": "0.1.0",
+  "description": "개인 KLAP-core 인스턴스의 KLAS 학습 정보, 수강 작업, 앱 화면과 새 콘텐츠 이벤트를 ChatGPT에 연결합니다.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "KLAP",
+        "shortDescription": "나의 KLAS와 새 소식을 한곳에서",
+        "longDescription": "개인 서버의 KLAS 계정을 OAuth로 연결합니다. 공지, 과제, 강의, 시간표와 출석을 앱 화면에서 확인하고, 요청한 수강 작업을 추적합니다. 지원 호스트에서는 새 공지·과제·강의 MCP Events를 구독할 수 있습니다. Mac 연결 시 Apple 캘린더와 미리알림 동기화를 제공합니다.",
+        "category": "Productivity",
+        "capabilities": ["Interactive"],
+        "logo": "assets/icon.svg",
+        "composerIcon": "assets/icon.svg",
+        "defaultPrompt": "KLAP을 열고 이번 주 과제와 온라인 강의 마감을 보여줘."
+      }
+    }
+  }
+}
