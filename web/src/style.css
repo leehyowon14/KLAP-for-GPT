@@ -10,8 +10,8 @@
   --wash: #f5f6f8;
   --line: var(--color-border-primary, #edf0f3);
   --ink: var(--color-text-primary, #191f28);
-  --muted: var(--color-text-secondary, #6b7684);
-  --accent: #df4c48;
+  --muted: #64707e;
+  --accent: #d23f3b;
   --accent-hover: #c63e3a;
   --accent-soft: #fff0ed;
   --accent-ink: #be3834;
@@ -156,7 +156,7 @@ select {
 .nav-label {
   font-size: 12px;
   font-weight: 600;
-  color: #8b95a1;
+  color: var(--muted);
   padding: 0 16px;
   margin-bottom: 12px;
 }
@@ -213,7 +213,7 @@ nav .icon {
   display: block;
   margin: 8px 0 0 14px;
   font-size: 11px;
-  color: #8b95a1;
+  color: var(--muted);
 }
 .dot {
   display: inline-block;
@@ -379,7 +379,7 @@ p {
 .stat > small {
   font-size: 12px;
   line-height: 1.5;
-  color: #8b95a1;
+  color: var(--muted);
 }
 .stats .stat:first-child {
   background: var(--accent-soft);
@@ -554,7 +554,7 @@ footer {
   gap: 12px;
   padding: 28px 4px 0;
   font-size: 11px;
-  color: #8b95a1;
+  color: var(--muted);
 }
 footer .dot {
   width: 5px;
