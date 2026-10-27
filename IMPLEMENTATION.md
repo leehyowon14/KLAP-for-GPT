@@ -114,3 +114,17 @@ HTTPS 프록시의 HTTP 전달과 공개 Host를 재현하는 회귀 테스트�
 - 최종 운영 컨테이너 healthy와 외부 HTTPS health 200·익명 MCP 401을 확인했다.
   운영 HTML은 검증한 로컬 UI 번들과 바이트 단위로 같으며 로그인 페이지의 로고·최종 색상·
   Origin 정책과 data 이미지 CSP도 확인했다. 기존 Safari 운영 탭을 새 UI로 갱신했다.
+
+## favicon 및 투명 로고 보정
+
+웹 앱과 로그인·OAuth 동의 화면에 동일한 KLAP 로고 favicon을 선언했다.
+로고는 기존 Mark·Sparks 경로 4개만 남기고 배경 rect를 제거했다.
+웹 번들의 favicon data URL을 디코딩해 투명 로고 원본과 일치하는지 확인했다.
+웹·인증·플러그인 로고도 동일하며 외부 이미지 요청을 추가하지 않았다.
+
+TypeScript와 웹 번들 빌드, auth/server race 테스트 및 Mac 앱 빌드·서명 검사가 통과했다.
+비공개 플러그인 0.1.2의 로고 바이트와 설정·파일 목록·범위 보존을 저장 후 재조회했다.
+
+최종 운영 컨테이너 healthy와 외부 health를 확인했다. 운영 웹·로그인 HTML에서 favicon을
+디코딩해 투명 SVG 원본과 일치하는지 확인했고, 운영 UI 번들도 로컬 빌드와 동일했다.
+기존 Safari 운영 탭을 새로고침해 favicon과 배경 없는 본문 로고의 실제 표시를 확인했다.
