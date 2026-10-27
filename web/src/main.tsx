@@ -18,6 +18,7 @@ import {
   timetable,
   type TimetableEntry,
 } from "./model";
+import { Icon, BrandLogo, AssetCredits } from "./icons";
 import "./style.css";
 
 type View =
@@ -52,37 +53,6 @@ const statusName: Data = {
   retrying: "재시도 대기",
   delivered: "호스트 수신",
 };
-function Icon({ name }: { name: string }) {
-  const paths: Data = {
-    home: "m3 10 9-7 9 7v10H3z M9 20v-7h6v7",
-    check: "M5 3h14v18H5z M8 11l3 3 5-6",
-    play: "M8 4v16l12-8z",
-    bell: "M5 17h14l-2-4V9a5 5 0 0 0-10 0v4z M10 21h4",
-    grid: "M3 3h18v18H3z M3 9h18 M3 15h18 M9 3v18 M15 3v18",
-    chart: "M4 20V12 M12 20V4 M20 20V8",
-    calendar: "M4 5h16v16H4z M8 2v6 M16 2v6 M4 11h16",
-    activity: "M2 12h5l3-8 4 16 3-8h5",
-    settings:
-      "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8 M12 2v3 M12 19v3 M2 12h3 M19 12h3 M5 5l2 2 M17 17l2 2 M5 19l2-2 M17 7l2-2",
-    search: "M16 16l5 5 M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14",
-    arrow: "M4 12h15 M13 6l6 6-6 6",
-    refresh: "M20 8a8 8 0 1 0 0 8 M20 3v5h-5",
-    close: "M6 6l12 12 M6 18 18 6",
-  };
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.65"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d={paths[name] || paths.home} />
-    </svg>
-  );
-}
 function Empty({
   title,
   description,
@@ -93,7 +63,7 @@ function Empty({
   return (
     <div className="empty">
       <span className="empty-mark">
-        <Icon name="check" />
+        <Icon name="done" />
       </span>
       <h3>{title}</h3>
       {description && <p>{description}</p>}
@@ -326,14 +296,14 @@ function App() {
   if (!ready)
     return (
       <div className="boot" role="status">
-        <span className="brand-logo">K</span>
+        <BrandLogo />
         <p>KLAP을 연결하고 있어요.</p>
       </div>
     );
   if (!signedIn && !embedded)
     return (
       <main className="welcome">
-        <span className="brand-logo">K</span>
+        <BrandLogo />
         <span className="eyebrow">YOUR CAMPUS, CONNECTED</span>
         <h1>
           대학 생활을
@@ -356,7 +326,7 @@ function App() {
     <div className="layout">
       <aside className="sidebar">
         <button className="brand" onClick={() => go("home")}>
-          <span className="brand-logo">K</span>
+          <BrandLogo />
           <span>
             KLAP<small>나의 캠퍼스</small>
           </span>
@@ -1060,6 +1030,7 @@ function App() {
             </>
           )}
           <footer>
+            <AssetCredits />
             <span>
               <span className="dot" /> KLAP-core · 개인 학습 공간
             </span>

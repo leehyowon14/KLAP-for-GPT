@@ -60,7 +60,7 @@ select:focus-visible {
   outline: 3px solid #b3376070;
   outline-offset: 3px;
 }
-svg {
+.icon {
   width: 19px;
   height: 19px;
   flex-shrink: 0;
@@ -118,21 +118,17 @@ select {
   letter-spacing: -0.7px;
 }
 .brand-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   flex-shrink: 0;
-  width: 37px;
-  height: 40px;
-  border-radius: 13px 13px 13px 4px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 25px;
-  font-weight: 750;
-  font-style: italic;
-  letter-spacing: -2px;
-  padding-right: 3px;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
 }
+.asset-credits { font-size: 11px; }
+.asset-credits summary { cursor: pointer; }
+.asset-credits > div { max-width: 650px; padding: 12px; }
+.asset-credits pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; line-height: 1.8; }
+.asset-credits a { color: var(--accent); }
 .brand small {
   display: block;
   color: var(--muted);
@@ -168,7 +164,7 @@ nav button.active,
   background: var(--accent-soft);
   color: var(--accent);
 }
-nav button.active svg {
+nav button.active .icon {
   stroke-width: 2;
 }
 .nav-count {
@@ -236,7 +232,7 @@ nav button.active svg {
   gap: 7px;
   color: var(--muted);
 }
-.search svg {
+.search .icon {
   width: 16px;
 }
 .search input {
@@ -253,7 +249,7 @@ nav button.active svg {
   background: transparent;
   flex-shrink: 0;
 }
-.icon-button svg {
+.icon-button .icon {
   width: 18px;
 }
 .content {
@@ -319,7 +315,7 @@ p {
   font-size: 11px;
   color: var(--muted);
 }
-.stat > span svg {
+.stat > span .icon {
   width: 16px;
   color: #9d9ba8;
 }
@@ -418,7 +414,7 @@ p {
   color: var(--muted);
   background: var(--wash);
 }
-.kind svg {
+.kind .icon {
   width: 18px;
 }
 .full-row {
@@ -431,7 +427,7 @@ p {
   background: transparent;
   justify-content: flex-start;
 }
-.full-row > svg {
+.full-row > .icon {
   color: var(--muted);
   width: 15px;
 }
@@ -454,12 +450,12 @@ p {
   gap: 16px;
   text-align: left;
 }
-.shortcut > svg:first-child {
+.shortcut > .icon:first-child {
   width: 23px;
   height: 23px;
   color: var(--accent);
 }
-.shortcut > svg:last-child {
+.shortcut > .icon:last-child {
   margin-left: auto;
   color: var(--muted);
   width: 15px;
@@ -501,7 +497,7 @@ footer .dot {
   border-radius: 50%;
   margin-bottom: 8px;
 }
-.empty-mark svg {
+.empty-mark .icon {
   width: 23px;
   height: 23px;
 }
@@ -536,7 +532,7 @@ footer .dot {
   padding: 0;
   margin-left: auto;
 }
-.alert svg {
+.alert .icon {
   width: 16px;
 }
 .success {
@@ -562,7 +558,7 @@ footer .dot {
   border-radius: 20px;
   color: var(--accent);
 }
-.connect-symbol svg {
+.connect-symbol .icon {
   width: 33px;
   height: 33px;
 }
@@ -996,7 +992,7 @@ dd {
     padding: 9px 11px;
     font-size: 11px;
   }
-  .sidebar nav button svg {
+  .sidebar nav button .icon {
     width: 16px;
   }
   .sidebar-bottom {
@@ -1049,7 +1045,7 @@ dd {
   .stat > span {
     font-size: 10px;
   }
-  .stat > span svg {
+  .stat > span .icon {
     display: none;
   }
   .stat > strong {
