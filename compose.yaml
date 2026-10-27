@@ -1,0 +1,23 @@
+name: klap-gpt
+services:
+  klap:
+    build: .
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:${KLAP_PORT:-3030}:3030"
+    environment:
+      KLAP_PUBLIC_URL: ${KLAP_PUBLIC_URL:?Set your public HTTPS origin in .env}
+      KLAP_MODE: ${KLAP_MODE:-server}
+    volumes:
+      - data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 128
+    mem_limit: 512m
+    stop_grace_period: 20s
+volumes:
+  data:

@@ -1,0 +1,11 @@
+.git
+**/.git
+**/.build
+**/node_modules
+web/dist
+data
+dist
+bin
+.env
+.env.*
+*.log
