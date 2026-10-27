@@ -10,14 +10,14 @@ import zipfile
 def main():
     root = Path(__file__).resolve().parent.parent
     source = root / "plugin" / "klap"
+    manifest = json.loads((source / "plugin.json").read_text())
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--origin", help="Verified public HTTPS origin of your KLAP instance")
-    parser.add_argument("--output", type=Path, default=root / "dist" / "klap-plugin-0.1.0.zip")
+    parser.add_argument("--output", type=Path, default=root / "dist" / f"klap-plugin-{manifest['version']}.zip")
     args = parser.parse_args()
     output = args.output.resolve()
     if output.is_relative_to(source):
         parser.error("Archive must be outside plugin/klap")
-    manifest = json.loads((source / "plugin.json").read_text())
     mcp = json.loads((source / "mcp.json").read_text())
     if args.origin:
         value = urlsplit(args.origin)
