@@ -81,6 +81,8 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 		return nil, e
 	}
 	switch kind {
+	case "terms":
+		return service.TermList(ctx, core.TermListOptions{User: user})
 	case "courses":
 		return service.CourseList(ctx, core.CourseListOptions{User: user, Refresh: true})
 	case "assignments":
