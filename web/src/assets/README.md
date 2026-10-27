@@ -4,8 +4,8 @@
 
 `klap-logo.svg` combines the original `KLAP-Sparks.svg` and `KLAP-Mark.svg` layers
 from `../KLAP_mac/KLAP.icon/Assets`, in the same order as `KLAP.icon/icon.json`.
-The original paths, viewport, and fills are preserved; a warm neutral app tile is
-added for web presentation. The mark is the existing KLAP brand, not a Toss asset.
+The original paths, viewport, and fills are preserved on a transparent background.
+The mark is the existing KLAP brand, not a Toss asset.
 
 ## Tossface
 
