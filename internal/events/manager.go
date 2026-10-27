@@ -281,18 +281,28 @@ func (m *Manager) Unsubscribe(ctx context.Context, principal string, request Sub
 // Poll fetches complete fresh snapshots. A failed domain never advances its
 // baseline. Baseline changes and all matching outbox entries commit together.
 func (m *Manager) Poll(ctx context.Context) error {
-	account, err := m.source.Account(ctx)
-	if err != nil {
-		return err
-	}
 	now := m.now().UTC()
 	scopes := map[string]Subscription{}
 	var snapshot ledger
-	err = m.db.View(func(records state.Records) error {
+	err := m.db.View(func(records state.Records) error {
 		var e error
 		snapshot, e = readLedger(records)
 		return e
 	})
+	if err != nil {
+		return err
+	}
+	hasActive := false
+	for _, sub := range snapshot.Subscriptions {
+		if active(sub, now) {
+			hasActive = true
+			break
+		}
+	}
+	if !hasActive {
+		return nil
+	}
+	account, err := m.source.Account(ctx)
 	if err != nil {
 		return err
 	}

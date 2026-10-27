@@ -79,6 +79,21 @@ func mustDispatch(t *testing.T, m *Manager) {
 		t.Fatal(err)
 	}
 }
+func TestInactiveMonitoringDoesNotRequireAccount(t *testing.T) {
+	m, source, _, now, _, _ := harness(t)
+	source.errorAccount = errors.New("not connected")
+	mustPoll(t, m)
+	source.errorAccount = nil
+	if _, err := m.Subscribe(context.Background(), "owner", subscription()); err != nil {
+		t.Fatal(err)
+	}
+	*now = now.Add(25 * time.Hour)
+	source.errorAccount = errors.New("not connected")
+	mustPoll(t, m)
+	if source.reads != 0 {
+		t.Fatal("inactive monitoring fetched course content")
+	}
+}
 func TestBaselineAtomicOutboxRestartAndStableRetry(t *testing.T) {
 	ctx := context.Background()
 	m, source, sender, now, dir, key := harness(t)
