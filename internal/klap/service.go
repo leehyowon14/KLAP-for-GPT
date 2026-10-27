@@ -5,15 +5,19 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/leehyowon14/KLAP-cli/pkg/core"
 	"github.com/leehyowon14/KLAP-for-GPT/internal/events"
 	"github.com/leehyowon14/KLAP-for-GPT/internal/jobs"
-	"time"
 )
 
 type Service struct {
-	Core  *core.Service
-	Apple bool
+	Core       *core.Service
+	Apple      bool
+	AppleReady func() bool
+	syncMu     sync.Mutex
 }
 type Query struct {
 	Term     string `json:"term,omitempty"`
@@ -147,9 +151,11 @@ func (s *Service) Disconnect(ctx context.Context) error {
 	return s.Core.RemoveUser(ctx, user.StudentID)
 }
 func (s *Service) Sync(ctx context.Context, decisions map[string]core.SyncDecision) (any, error) {
-	if !s.Apple {
+	if !s.Apple || (s.AppleReady != nil && !s.AppleReady()) {
 		return nil, errors.New("Apple 동기화를 지원하는 Mac에 연결해 주세요.")
 	}
+	s.syncMu.Lock()
+	defer s.syncMu.Unlock()
 	for _, d := range decisions {
 		if d != "keep" && d != "apply" {
 			return nil, errors.New("sync decisions must be keep or apply")
