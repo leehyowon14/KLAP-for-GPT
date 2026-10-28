@@ -18,10 +18,14 @@
 - 플러그인 목록의 **추가 → 사용자 지정 MCP 서버 추가**에서 기존 MCP URL을
   입력하자 ChatGPT가 DCR, `klap` scope, authorization/token/registration URL,
   issuer와 resource를 자동 검색했다.
-- 기본 및 필수 권한 범위를 `klap`으로 준비했다. **플러그인으로 생성**은
+- 기본 및 필수 권한 범위를 `klap`으로 준비했다. 최초 **플러그인으로 생성**은
   자동 승인 심사가 기존 브라우저 접근 허용 범위를 넘는다고 판단해 차단했다.
-  생성 승인을 요청한 상태이며, 실제 connector ID나 도구 검색 결과는 아직 없다.
-- 이후 생성하더라도 OAuth 접근 동의는 소유자가 직접 완료한다.
+  이후 사용자의 명시적 생성 승인을 받아 요청을 진행했다.
+- 서버 access log에서 `POST /oauth/register`의 `201`과 metadata 조회의 `200`을
+  확인했다. 이는 OAuth client 등록 성공이며, 인증된 MCP 도구 호출 성공은 아니다.
+- ChatGPT의 **KLAP 연결** 데이터 접근 동의 화면까지 도착했다. 소유자가 연결 및
+  후속 OAuth 동의를 직접 완료하도록 인계했다. 실제 connector ID와 도구 검색 결과,
+  설치 완료 및 이벤트 전달은 아직 확인하지 않았다.
 
 ## 사용할 기존 서버와 인증 설정
 
