@@ -235,3 +235,77 @@ func TestOwnerCSRFRedirectAndRegistrationBoundaries(t *testing.T) {
 		t.Fatal("unknown bearer accepted")
 	}
 }
+
+func TestConsentPolicyAllowsOnlyRegisteredCallbackOrigin(t *testing.T) {
+	h := newHarness(t)
+	client := h.register(t)
+	digest := sha256.Sum256([]byte(strings.Repeat("v", 43)))
+	q := url.Values{"client_id": {client}, "redirect_uri": {"https://client.example/callback"}, "response_type": {"code"}, "scope": {"klap"}, "state": {"random-state-12345678"}, "code_challenge": {base64.RawURLEncoding.EncodeToString(digest[:])}, "code_challenge_method": {"S256"}, "resource": {testBase + "/mcp"}}
+	consent := func() *httptest.ResponseRecorder {
+		t.Helper()
+		req := httptest.NewRequest(http.MethodGet, testBase+"/oauth/authorize?"+q.Encode(), nil)
+		req.AddCookie(h.cookie)
+		rec := httptest.NewRecorder()
+		h.mux.ServeHTTP(rec, req)
+		return rec
+	}
+	rec := consent()
+	want := strings.Replace(pagePolicy, "form-action 'self'", "form-action 'self' https://client.example", 1)
+	if rec.Code != http.StatusOK || rec.Header().Get("Content-Security-Policy") != want {
+		t.Fatalf("consent policy: status=%d policy=%q", rec.Code, rec.Header().Get("Content-Security-Policy"))
+	}
+	if rec.Header().Get("Cache-Control") != "no-store" || !strings.Contains(rec.Body.String(), `name="csrf"`) {
+		t.Fatal("consent cache or CSRF protections missing")
+	}
+	q.Set("redirect_uri", "https://evil.example/callback")
+	rec = consent()
+	if rec.Code == http.StatusOK || strings.Contains(rec.Header().Get("Content-Security-Policy"), "evil.example") || strings.Contains(rec.Header().Get("Location"), "evil.example") {
+		t.Fatal("unregistered callback influenced the consent policy or redirect")
+	}
+	for _, decision := range []string{"allow", "deny"} {
+		q.Set("redirect_uri", "https://client.example/callback")
+		rec = h.form("/oauth/authorize?"+q.Encode(), url.Values{"csrf": {h.csrf}, "decision": {decision}}, true)
+		u, err := url.Parse(rec.Header().Get("Location"))
+		if err != nil || rec.Code != http.StatusSeeOther || u.Host != "client.example" {
+			t.Fatalf("%s callback failed: status=%d", decision, rec.Code)
+		}
+		if decision == "allow" && u.Query().Get("code") == "" || decision == "deny" && u.Query().Get("error") != "access_denied" {
+			t.Fatalf("wrong %s callback response", decision)
+		}
+	}
+	login := httptest.NewRecorder()
+	h.mux.ServeHTTP(login, httptest.NewRequest(http.MethodGet, testBase+"/login", nil))
+	if login.Header().Get("Content-Security-Policy") != pagePolicy {
+		t.Fatal("login form policy was widened")
+	}
+}
+
+func TestConsentCallbackOrigin(t *testing.T) {
+	for _, tc := range []struct{ uri, want string }{
+		{"https://chatgpt.com/connector/oauth/test?foo=bar", "https://chatgpt.com"},
+		{"https://client.example:8443/callback;query?next=https://other.example", "https://client.example:8443"},
+		{"http://localhost:8080/callback", "http://localhost:8080"},
+		{"http://127.0.0.1:8080/callback", "http://127.0.0.1:8080"},
+		{"http://[::1]:8080/callback", "http://[::1]:8080"},
+		{"https://*.example/callback", ""},
+		{"https://client.example;script-src/callback", ""},
+		{"https://u:p@client.example/callback", ""},
+		{"https://client.example/callback#fragment", ""},
+		{"http://client.example/callback", ""},
+		{"//client.example/callback", ""},
+		{"javascript:alert(1)", ""},
+	} {
+		t.Run(tc.uri, func(t *testing.T) {
+			u, err := url.Parse(tc.uri)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got := consentCallbackOrigin(u); got != tc.want {
+				t.Fatalf("origin = %q, want %q", got, tc.want)
+			}
+		})
+	}
+	if got := consentCallbackOrigin(nil); got != "" {
+		t.Fatalf("nil callback origin = %q", got)
+	}
+}

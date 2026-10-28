@@ -241,7 +241,16 @@ func (s *Service) authorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if r.Method == http.MethodGet {
-		render(w, consentPage, map[string]string{"CSRF": session.CSRF, "Client": req.GetClient().GetID(), "Redirect": req.GetRedirectURI().String(), "Action": r.URL.RequestURI()})
+		// Safari applies form-action to the POST's redirect as well. Only the
+		// callback already validated against this client's registration may be
+		// added to the consent page's policy.
+		callbackOrigin := consentCallbackOrigin(req.GetRedirectURI())
+		if callbackOrigin == "" {
+			http.Error(w, "unsupported OAuth callback origin", http.StatusBadRequest)
+			return
+		}
+		policy := strings.Replace(pagePolicy, "form-action 'self'", "form-action 'self' "+callbackOrigin, 1)
+		renderWithPolicy(w, consentPage, map[string]string{"CSRF": session.CSRF, "Client": req.GetClient().GetID(), "Redirect": req.GetRedirectURI().String(), "Action": r.URL.RequestURI()}, policy)
 		return
 	}
 	s.provider.WriteAuthorizeResponse(r.Context(), w, req, resp)
@@ -477,9 +486,29 @@ func (s *Service) logout(w http.ResponseWriter, r *http.Request) {
 	jsonResponse(w, 200, map[string]bool{"signed_in": false})
 }
 
+const pagePolicy = "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'"
+
+func consentCallbackOrigin(callback *url.URL) string {
+	if callback == nil || !validRedirect(callback.String()) {
+		return ""
+	}
+	// A registered URI is not itself safe to interpolate into a CSP header:
+	// delimiters and wildcards must never introduce additional policy sources.
+	for _, c := range callback.Host {
+		if !strings.ContainsRune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-:[]", c) {
+			return ""
+		}
+	}
+	return callback.Scheme + "://" + callback.Host
+}
+
 func render(w http.ResponseWriter, source string, v any) {
+	renderWithPolicy(w, source, v, pagePolicy)
+}
+
+func renderWithPolicy(w http.ResponseWriter, source string, v any, policy string) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-store")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; img-src data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'")
+	w.Header().Set("Content-Security-Policy", policy)
 	_ = template.Must(template.New("page").Parse(source)).Execute(w, v)
 }
