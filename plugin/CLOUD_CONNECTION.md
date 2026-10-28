@@ -27,6 +27,28 @@
   후속 OAuth 동의를 직접 완료하도록 인계했다. 실제 connector ID와 도구 검색 결과,
   설치 완료 및 이벤트 전달은 아직 확인하지 않았다.
 
+### Safari 연결 허용 후 정지 원인과 수정
+
+소유자가 동의 버튼을 눌렀을 때 서버에는 `POST /oauth/authorize`의 `303`이
+기록됐지만, Safari 콘솔에는 리다이렉트 목적지가 CSP `form-action`에 없다는
+차단 오류가 표시됐다. 동의 페이지가 `form-action 'self'`만 허용해 ChatGPT로의
+복귀를 막은 것이다. 무응답이나 OAuth client 등록 실패로 분류하지 않는다.
+
+`e1841c2`는 Fosite가 등록 정보와 대조한 callback origin만 해당 동의 페이지의
+`form-action`에 추가한다. 로그인 페이지의 정책, PKCE, CSRF, Origin 검증은 유지한다.
+와일드카드 및 CSP 구분자를 포함한 host는 정책에 삽입하지 않는다.
+`go test -race -count=1 -timeout 90s ./internal/auth ./internal/server`가 통과했다.
+운영 Docker 빌드에서도 전체 Go 테스트와 웹 빌드·테스트 3개가 통과했다.
+배포 전 519개 소스 파일 해시를 대조하고 수정 코드·테스트 두 파일만 교체했다.
+이전 이미지와 두 파일 및 manifest의 롤백 사본을 보존했다. 새 컨테이너는 healthy이며
+내부·공개 `/health` 모두 정상 응답했다.
+
+기존 Safari 동의 페이지를 새로고침하고 Web Inspector에서 문서 응답 `200`,
+`Cache-Control: no-store`, `Referrer-Policy: same-origin`,
+`form-action 'self' https://chatgpt.com`이 포함된 CSP를 확인했다.
+소유자에게 **연결 허용** 재시도를 요청했다. 실제 ChatGPT 복귀·토큰 교환·도구 검색과
+MCP Events 노출은 아직 확인하지 않았다.
+
 ## 사용할 기존 서버와 인증 설정
 
 | 항목 | 검증한 값 |
