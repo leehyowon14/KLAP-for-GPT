@@ -1,27 +1,29 @@
 # KLAP 비공개 릴리스
 
-2026-10-27에 Plugin Creator로 사용자 계정에 저장한 비공개 플러그인이다.
+2026-10-27에 생성하고 2026-10-28에 클라우드 연결을 반영한 사용자 계정의 비공개 플러그인이다.
 
 - 이름: KLAP
-- 버전: `0.1.2`
+- 버전: `0.1.3`
 - Plugin ID: `plugins_6ae05a8b1af08191a7b593f119b7f914`
-- Release ID: `pluginrel_6ae084ef6b48819180d032a1c964e419`
+- Release ID: `pluginrel_6ae1c7bb59ec8191b1e6803ad1385ab0`
 - [플러그인 열기](https://chatgpt.com/plugins/plugins_6ae05a8b1af08191a7b593f119b7f914)
 - MCP: `https://klap.leehyowon14.dev/mcp`
 
-**현재 클라우드 연결 미완료:** 사용자가 이 릴리스에서 **데스크톱 전용** 표시를
-확인했다. 원격 MCP URL을 담은 ZIP 저장을 ChatGPT 클라우드 MCP 등록 완료로 취급하지 않는다.
-현재 파일에는 등록된 App 바인딩이 없으며, [클라우드 연결 복구](CLOUD_CONNECTION.md)의
-등록·OAuth·호스트 도구 및 이벤트 검색을 마쳐야 한다.
+**클라우드 도구 연결 확인:** 등록된 App 바인딩과 OAuth 연결을 반영했고, 실제
+`klap_open` 호출이 성공했다. ChatGPT 상세에는 도구 18개와 이벤트 3종이 표시됐다.
+활성 이벤트 구독은 0개이므로 자동 감지·에이전트 호출은 아직 활성화되지 않았다.
+검증 단계와 초기 문제는 [클라우드 연결 복구](CLOUD_CONNECTION.md)에 기록했다.
 
 저장 후 `get_plugin_files`로 스킬·매니페스트·아이콘과 생성된 호환 매니페스트를 확인했다.
-계정에 저장된 상태와 호스트에 설치·OAuth 연결된 상태는 별개다. 이 기록 시점에는
-호스트 도구 연결과 실제 이벤트에 의한 에이전트 실행은 아직 확인하지 않았다.
+계정에 저장된 상태, 호스트의 OAuth·도구 연결, 실제 이벤트에 의한 에이전트 실행은
+별개이며 마지막 단계는 아직 확인하지 않았다.
 
 패키지 재생성:
 
 ```sh
 python3 scripts/package-plugin.py
+# 직접 MCP를 사용하는 별도 클라이언트용 export (클라우드 등록을 대신하지 않음):
+python3 scripts/package-plugin.py --portable
 # 별도 개인 인스턴스에 배포했다면, 실제 접근 확인 후 주소 변경:
 python3 scripts/package-plugin.py --origin https://your-klap.example
 ```
@@ -43,3 +45,10 @@ KLAP_mac의 `KLAP-Mark.svg`와 `KLAP-Sparks.svg`를 조합한 로고로 대표 �
 대표 로고를 둘러싼 배경 rect를 제거하고 KLAP_mac의 Mark·Sparks 경로만 남겼다.
 기존 Plugin ID·MCP·스킬·프롬프트·비공개 범위는 유지했다.
 저장 후 아이콘 원본 바이트와 매니페스트 및 전체 파일 목록 보존을 재조회했다.
+
+## 0.1.3 클라우드 App 연결
+
+공식 사용자 지정 MCP 서버 등록 흐름에서 확인한 실제 App을 기존 KLAP 패키지에 연결했다.
+로고·스킬·기본 프롬프트·Plugin ID·비공개 범위는 유지했고, 로컬 실행으로 분류되던
+직접 MCP 선언은 클라우드 패키지에서 제거했다. 직접 MCP export는 `--portable` 또는
+`--origin`으로 별도 생성한다. 패키징 테스트 5개와 저장 후 소스 재조회가 통과했다.

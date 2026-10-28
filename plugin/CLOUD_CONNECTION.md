@@ -2,9 +2,23 @@
 
 ## 현재 확인 상태
 
-- 기존 비공개 패키지는 `plugins_6ae05a8b1af08191a7b593f119b7f914`, 버전 `0.1.2`이다.
+- 기존 비공개 패키지 `plugins_6ae05a8b1af08191a7b593f119b7f914`를 `0.1.3`으로 갱신했다.
+- 등록된 App ID는 `.app.json` 원본에서 확인한
+  `asdk_app_6ae1c28743408191b4f0fe2d651fd0b0`이다. 등록 UI가 생성한 기본 플러그인은
+  `plugin_asdk_app_6ae1c28743408191b4f0fe2d651fd0b0`이다.
+- OAuth 토큰 교환 `200`과 인증된 MCP 요청 `200`을 확인했다. ChatGPT 앱 상세에는
+  Read 도구 16개, Write 도구 2개와 `notice.created`, `assignment.created`,
+  `lecture.created`가 표시됐다.
+- 기존 플러그인에 같은 App을 연결하고 직접 MCP 선언 두 파일을 제거했다. 저장 후
+  App 바인딩·버전·삭제된 파일과 기존 로고·스킬 보존을 재조회했다.
+- 현재 대화에도 실제 KLAP 도구가 노출됐다. `klap_open` 호출이 성공했고 KLAS 연결은
+  정상이다. 활성 이벤트 구독은 **0개**, 스캔 기록은 없으므로 자동 감지가 활성화된
+  상태는 아니다. 이벤트 소스 목록 및 webhook 스키마 조회·구독·실제 수신은 미검증이다.
+
+### 초기 문제
+
 - 사용자가 ChatGPT 상세 화면에서 **데스크톱 전용** 표시를 확인했다.
-- 패키지에는 HTTPS `mcp.json`이 있지만 등록된 클라우드 App의 `.app.json` 바인딩은 없다.
+- `0.1.2` 패키지에는 HTTPS `mcp.json`이 있지만 등록된 클라우드 App 바인딩은 없었다.
 - `requires_local_executor: true`를 명시한 파일은 없다. 따라서 배지만 없애는 변경으로
   클라우드 도구가 등록됐다고 주장할 수 없다.
 - Plugin Management의 `not_installed` 응답만으로 미설치를 근본 원인으로 확정했던
