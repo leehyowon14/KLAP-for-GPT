@@ -75,8 +75,10 @@ KLAP_mac의 첫 실행에서 `firstClickOpened`가 한 번 false였으며 재실
 
 ## 사용자 연결 후 남은 확인
 
-- 소유자 암호 설정과 실제 KLAS 계정 연결.
-- 비공개 KLAP 플러그인 설치, OAuth 동의 후 실제 조회 및 MCP App 표시.
+- 웹 대시보드의 연결·조회와 ChatGPT의 OAuth 연결을 구분한다.
+- 데스크톱 전용으로 표시된 비공개 패키지의 클라우드 MCP 등록·App 바인딩 복구.
+  [현재 상태와 복구 설정](plugin/CLOUD_CONNECTION.md)을 기준으로 진행한다.
+- 클라우드에서 설치·OAuth 동의 후 실제 조회 및 MCP App 표시.
 - 지원되는 Cloud Work 채팅에서 세 이벤트 구독 후 실제 새 콘텐츠로 webhook 수신과
   에이전트 실행을 각각 확인. 구현·모의 전송 테스트가 실제 에이전트 실행을 증명하지 않는다.
 - Mac 또는 hybrid를 사용할 경우 LaunchAgent 설치, Keychain 페어링, EventKit 권한과
