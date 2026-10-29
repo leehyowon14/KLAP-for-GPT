@@ -1,3 +1,4 @@
+import { searchLearning } from "./hangul-search";
 import { displayQuery, queryWarning } from "./agent-query";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -237,8 +238,7 @@ function App() {
     if (["notices", "assignments", "lectures"].includes(view)) {
  args.intent = "overview"; if (course) args.course_ids = [course];
  }
-    if (view === "search") args.query = search;
-    call(`klap_${tool}`, args)
+    (view === "search" ? searchLearning(search, term, call) : call(`klap_${tool}`, args))
       .then((r) => {
         if (active) {
           setData(displayQuery(tool, r.data));
@@ -392,6 +392,9 @@ function App() {
               placeholder="공지, 과제, 강의 검색"
               value={query}
               maxLength={200}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && e.nativeEvent.isComposing) e.preventDefault();
+              }}
               onChange={(e) => setQuery(e.target.value)}
             />
           </form>
