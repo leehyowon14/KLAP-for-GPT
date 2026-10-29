@@ -196,6 +196,13 @@ http
       for await (const chunk of req) raw += chunk;
       const { name, arguments: args = {} } = JSON.parse(raw);
       let data = fixtures[name];
+      if (["klap_lectures","klap_assignments","klap_notices"].includes(name) && args.intent) {
+        const items=name==="klap_lectures" ? lectures.map(({row:r,reason})=>({id:r.ID,kind:"lecture",title:r.Lecture.Title,course_id:r.CourseName,week:r.Lecture.WeekNo,end_at:r.Lecture.EndAt,completion:{status:r.Lecture.Progress==="100"?"completed":"incomplete",progress:Number(r.Lecture.Progress)},availability:"open",attendable:!reason}))
+          : name==="klap_assignments" ? assignments.map(r=>({id:r.ID,kind:"assignment",title:r.Assignment.Title,course_id:r.CourseName,end_at:r.Assignment.DueAt,submitted:r.Assignment.Submitted?"submitted":"pending"}))
+          : notices.map(r=>({id:r.ID,kind:"notice",title:r.Notice.Title,course_id:r.CourseName,registered_at:r.Notice.Registered,pinned:r.Notice.Top}));
+        data={query:{intent:args.intent,term:term.value,as_of:now},coverage:{status:"complete"},selection:{status:"verified",matched_total:items.length},courses:{},items,page:{complete:true,next_cursor:null}};
+      }
+      if (name === "klap_get_items") data={items:args.ids.map(id=>({id,status:"ok",title:"예시 상세 본문",course_id:"자료구조",fetched_at:now,sections:{content:'UI 검증용 원문입니다.\n<script>alert("실행되지 않음")</script>'}})),page:{complete:true,next_cursor:null}};
       if (name === "klap_state")
         data = {
           connection: {
@@ -261,6 +268,6 @@ http
     res.setHeader("Content-Type", "text/html");
     res.end(html);
   })
-  .listen(4173, "127.0.0.1", () =>
-    console.log("Fixture preview: http://127.0.0.1:4173"),
+  .listen(Number(process.env.KLAP_PREVIEW_PORT || 4173), "127.0.0.1", () =>
+    console.log(`Fixture preview: http://127.0.0.1:${process.env.KLAP_PREVIEW_PORT || 4173}`),
   );
