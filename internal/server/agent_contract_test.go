@@ -61,3 +61,12 @@ func TestAssignmentIntentMCP(t *testing.T) {
 		t.Fatalf("%v", r)
 	}
 }
+
+func TestNoticeIntentMCP(t *testing.T) {
+	a, _, _ := testApp(t)
+	a.Backend = &agentBackend{}
+	r := rpc(t, a.MCP(), "tools/call", map[string]any{"name": "klap_notices", "arguments": map[string]any{"intent": "recent"}})
+	if r["error"] != nil {
+		t.Fatalf("%v", r)
+	}
+}
