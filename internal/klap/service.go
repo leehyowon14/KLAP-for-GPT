@@ -102,6 +102,8 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 			return service.QueryNotices(ctx, user, intent)
 		case "due":
 			return service.QueryDue(ctx, user, intent, q.Kinds)
+		case "search":
+			return service.QuerySearch(ctx, user, intent, q.Query, q.Kinds)
 		}
 	}
 	switch kind {

@@ -88,3 +88,12 @@ func TestDueIntentMCP(t *testing.T) {
 		t.Fatalf("%v", r)
 	}
 }
+
+func TestSearchIntentMCP(t *testing.T) {
+	a, _, _ := testApp(t)
+	a.Backend = &agentBackend{}
+	r := rpc(t, a.MCP(), "tools/call", map[string]any{"name": "klap_search", "arguments": map[string]any{"intent": "search", "query": "강의"}})
+	if r["error"] != nil {
+		t.Fatalf("%v", r)
+	}
+}

@@ -234,7 +234,7 @@ func (a *App) MCP() http.Handler {
 			props["id"] = stringField("Stable resource ID.")
 			required = []string{"id"}
 		}
-		if tool.name == "lectures" || tool.name == "assignments" || tool.name == "notices" || tool.name == "due" {
+		if tool.name == "lectures" || tool.name == "assignments" || tool.name == "notices" || tool.name == "due" || tool.name == "search" {
 			add("klap_"+tool.name, tool.title, agentDescription(tool.name), agentSchema(tool.name), true, nil)
 		} else {
 			add("klap_"+tool.name, tool.title, tool.description, schema(props, required...), true, nil)

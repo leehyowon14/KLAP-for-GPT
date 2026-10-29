@@ -10,13 +10,15 @@ import (
 
 func isAgentTool(name string) bool {
 	switch strings.TrimPrefix(name, "klap_") {
-	case "lectures", "assignments", "notices", "get_items", "due":
+	case "lectures", "assignments", "notices", "get_items", "due", "search":
 		return true
 	}
 	return false
 }
 func agentDescription(kind string) string {
 	switch kind {
+	case "search":
+		return "Search title and course_name metadata only. Intent search, query and optional kinds/course_ids/period. Does not search body text. Continue with cursor alone."
 	case "due":
 		return "Select all items at next_deadline or in_period. Includes future lectures. Kinds: assignment, lecture, academic. Uses end/deadline, never lecture opening time. Continue with cursor alone."
 	case "lectures":
@@ -52,6 +54,12 @@ func agentSchema(kind string) map[string]any {
 			intents = []string{"next_deadline", "in_period"}
 			props["kinds"] = arrayStrings()
 		}
+		if kind == "search" {
+			intents = []string{"search"}
+			props["query"] = stringField("Search phrase, 1–200 characters.")
+			props["kinds"] = arrayStrings()
+			required = []string{"intent", "query"}
+		}
 		props["intent"] = map[string]any{"type": "string", "enum": intents}
 		props["period"] = schema(map[string]any{"name": map[string]any{"type": "string", "enum": []string{"today", "this_week", "next_week", "next_7_days", "custom"}}, "from": stringField("Custom inclusive ISO datetime or KST date."), "until": stringField("Custom exclusive ISO datetime or KST date.")}, "name")
 	}
@@ -71,8 +79,11 @@ func validateAgentArgs(kind string, args []byte, q klap.Query) error {
 		return nil
 	}
 	allowed := map[string]bool{"term": true, "course_ids": true, "intent": true, "period": true}
-	if kind == "due" {
+	if kind == "due" || kind == "search" {
 		allowed["kinds"] = true
+	}
+	if kind == "search" {
+		allowed["query"] = true
 	}
 	if kind == "lectures" {
 		allowed["include_expired"] = true
