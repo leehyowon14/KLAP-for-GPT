@@ -1,3 +1,4 @@
+import { reconstructItems } from "./agent-query";
 import {
   App,
   applyDocumentTheme,
@@ -57,7 +58,7 @@ export async function connect() {
     canMessage: Boolean(app.getHostCapabilities()?.message),
   };
 }
-export async function call(name: string, args: Data = {}): Promise<Envelope> {
+async function callOnce(name: string, args: Data = {}): Promise<Envelope> {
   if (embedded) {
     if (!app?.getHostCapabilities()?.serverTools)
       throw new Error(
@@ -124,4 +125,15 @@ export async function requestMonitoring(term: string) {
   });
   if (result.isError)
     throw new Error("모니터링 요청을 채팅으로 전달하지 못했습니다.");
+}
+
+export async function call(name: string, args: Data = {}): Promise<Envelope> {
+ const first=await callOnce(name,args);
+ if (!first.data?.page) return first;
+ const items=[...first.data.items];let page=first.data.page;const seen=new Set<string>();
+ while (!page.complete) {
+  const cursor=page.next_cursor;if (!cursor || seen.has(cursor)) throw new Error("조회 이어받기 정보가 올바르지 않습니다.");
+  seen.add(cursor);const next=await callOnce(name,{cursor});items.push(...next.data.items);page=next.data.page;
+ }
+ return {...first,data:{...first.data,items:reconstructItems(items),page}};
 }
