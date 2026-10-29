@@ -15,6 +15,7 @@ import {
   formatDate,
   safeURL,
   selectedEligible,
+  eligibleLectureIds,
   paginate,
   timetable,
   type TimetableEntry,
@@ -681,6 +682,11 @@ function App() {
                           <h2>
                             온라인 강의 <span>{data.length}</span>
                           </h2>
+                          <div className="lecture-actions">
+                          <button disabled={busy || eligibleLectureIds(data).length === 0}
+                            onClick={() => setSelected(new Set(eligibleLectureIds(data)))}>
+                            수강 가능 전체 선택
+                          </button>
                           <button
                             disabled={
                               busy ||
@@ -717,6 +723,7 @@ function App() {
                             {selectedEligible(selected, data).length || ""} 선택
                             수강
                           </button>
+                          </div>
                         </div>
                         {data.length ? (
                           data.map(

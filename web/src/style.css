@@ -1435,3 +1435,21 @@ dd {
 .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
 .pagination { display: flex; justify-content: center; align-items: center; gap: 16px; padding-top: 18px; }
+
+.lecture-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.lecture input[type="checkbox"] {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+  border: 1.5px solid var(--muted);
+  border-radius: 4px;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.lecture input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+.lecture input[type="checkbox"]:checked::after {
+  content: ""; width: 5px; height: 10px; border: solid white; border-width: 0 2px 2px 0; transform: translateY(-1px) rotate(45deg);
+}
+.lecture input[type="checkbox"]:disabled { opacity: .4; cursor: default; }

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { timetable, safeURL, selectedEligible, formatDate, paginate } from "./model";
+import { timetable, safeURL, selectedEligible, formatDate, paginate, eligibleLectureIds } from "./model";
 const entry = {
   SubjectID: "a",
   SubjectName: "수업",
@@ -59,4 +59,12 @@ test("event pagination handles empty, exact, partial and stale pages", () => {
   assert.deepEqual(paginate([1,2,3,4,5,6], 2), {items: [6], page: 2, pages: 2});
   assert.equal(paginate([1], 9).page, 1);
   for (const page of [-1, 0, NaN, Infinity]) assert.equal(paginate([1], page).page, 1);
+});
+
+test("select all includes only eligible lectures, deduplicates and handles empty lists", () => {
+  assert.deepEqual(eligibleLectureIds([]), []);
+  const rows = [{row: {ID: "a"}, reason: ""}, {row: {ID: "b"}, reason: "완료"}, {row: {ID: "a"}, reason: ""}];
+  assert.deepEqual(eligibleLectureIds(rows), ["a"]);
+  assert.deepEqual(eligibleLectureIds(rows.filter(r => r.reason)), []);
+  assert.deepEqual(selectedEligible(new Set(eligibleLectureIds(rows)), [{row:{ID:"a"}, reason:"기한 만료"}]), []);
 });

@@ -74,3 +74,7 @@ export function paginate<T>(items: T[], requestedPage: number) {
   const page = Math.min(pages, Math.max(1, Number.isFinite(requestedPage) ? Math.floor(requestedPage) : 1));
   return { items: items.slice((page - 1) * 5, page * 5), page, pages };
 }
+
+export function eligibleLectureIds(rows: { row: { ID: string }; reason: string }[]) {
+  return [...new Set(rows.filter(({reason}) => !reason).map(({row}) => row.ID))];
+}
