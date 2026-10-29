@@ -179,7 +179,9 @@ docker compose exec -T klap cat /data/bootstrap.token
 
 서버는 OAuth Authorization Code와 PKCE S256을 사용합니다. 메뉴나 설치 가능 여부는 계정·워크스페이스 정책에 따라 달라질 수 있습니다.
 현재 연결 절차는 [OpenAI 공식 안내](https://developers.openai.com/plugins/deploy/connect-chatgpt)를 참고하세요.
-MCP Apps를 지원하지 않는 클라이언트에서는 앱 화면 대신 조회 도구의 텍스트 응답을 사용할 수 있습니다.
+MCP Apps를 지원하지 않는 클라이언트에서도 `structuredContent`를 읽어 조회 결과를 사용할 수 있습니다. 0.2.0의 텍스트 응답은 짧은 안내이며 전체 데이터는 구조화 응답에 있습니다.
+
+조회는 개수 대신 의도로 범위를 정합니다. 다음 시작 강의, 기간이 지난 미수강 포함 여부, 선택한 강의들의 완료 여부와 일괄 상세 조회는 [Agent 조회 API v2](docs/agent-query-api.md)를 참고하세요.
 
 <details>
 <summary>플러그인 ZIP을 직접 만들거나 다른 MCP 클라이언트에 연결하려면</summary>
