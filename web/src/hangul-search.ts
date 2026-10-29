@@ -51,3 +51,18 @@ export async function searchLearning(query: string, term: string, call: Call) {
   }
   return { data, retrieved_at };
 }
+
+// Share in-flight requests as well as resolved snapshots across keystrokes.
+export function createLearningSearch(call: Call) {
+  const cache = new Map<string, ReturnType<Call>>();
+  const cachedCall: Call = (name, args) => {
+    const key = JSON.stringify([name, args]);
+    let pending = cache.get(key);
+    if (!pending) {
+      pending = call(name, args).catch(error => { cache.delete(key); throw error; });
+      cache.set(key, pending);
+    }
+    return pending;
+  };
+  return (query: string, term: string) => searchLearning(query, term, cachedCall);
+}

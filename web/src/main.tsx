@@ -1,6 +1,6 @@
-import { searchLearning } from "./hangul-search";
+import { createLearningSearch } from "./hangul-search";
 import { displayQuery, queryWarning } from "./agent-query";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   call,
@@ -107,6 +107,7 @@ function App() {
     [search, setSearch] = useState(""),
     [revision, setRevision] = useState(0),
     [selected, setSelected] = useState(new Set<string>());
+  const searchLearning = useMemo(() => createLearningSearch(call), [revision]);
   const [detail, setDetail] = useState<Data>(),
     [detailBusy, setDetailBusy] = useState(false),
     [sync, setSync] = useState<Data>();
@@ -238,7 +239,7 @@ function App() {
     if (["notices", "assignments", "lectures"].includes(view)) {
  args.intent = "overview"; if (course) args.course_ids = [course];
  }
-    (view === "search" ? searchLearning(search, term, call) : call(`klap_${tool}`, args))
+    (view === "search" ? searchLearning(search, term) : call(`klap_${tool}`, args))
       .then((r) => {
         if (active) {
           setData(displayQuery(tool, r.data));
@@ -395,7 +396,12 @@ function App() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && e.nativeEvent.isComposing) e.preventDefault();
               }}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setQuery(value);
+                setSearch(value.trim());
+                if (view !== "search") go("search");
+              }}
             />
           </form>
           <button
@@ -878,7 +884,7 @@ function App() {
                   {view === "search" && data && (
                     <section className="card">
                       <div className="section-title">
-                        <h2>“{search}” 검색 결과</h2>
+                        <h2>{search ? `“${search}” 검색 결과` : "검색어를 입력해 주세요"}</h2>
                       </div>
                       <Problems items={data.Errors} />
                       {[
@@ -928,7 +934,7 @@ function App() {
                         "Courses",
                         "Academics",
                       ].some((k) => data[k]?.length) && (
-                        <Empty title="검색 결과가 없어요" />
+                        <Empty title={search ? "검색 결과가 없어요" : "과목명이나 자료 제목으로 검색하세요"} />
                       )}
                     </section>
                   )}

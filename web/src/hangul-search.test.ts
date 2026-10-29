@@ -41,3 +41,29 @@ test("empty query performs no network calls; total failure remains visible", asy
   const failed = await searchLearning("과제", "", async () => {throw new Error("offline");});
   assert.equal(failed.data.Errors.length,5);
 });
+
+test("live search reuses requests, separates terms and skips empty input", async () => {
+  let calls = 0;
+  const search = createLearningSearch(async name => {
+    calls++;
+    return {data: name === "klap_academic" ? {Events:[]} : [], retrieved_at:"now"};
+  });
+  await Promise.all([search("ㅈ", "2026,2"), search("ㅈㄹ", "2026,2")]);
+  assert.equal(calls, 5);
+  await search("자료", "2026,2");
+  await search("", "2026,2");
+  assert.equal(calls, 5);
+  await search("자료", "2026,1");
+  assert.equal(calls, 10);
+});
+test("live search retries failed sources", async () => {
+  let calls = 0;
+  const search = createLearningSearch(async name => {
+    calls++;
+    if (calls === 1) throw new Error("temporary");
+    return {data: name === "klap_academic" ? {Events:[]} : [], retrieved_at:"now"};
+  });
+  assert.equal((await search("자료", "")).data.Errors.length, 1);
+  assert.equal((await search("자료구조", "")).data.Errors.length, 0);
+  assert.equal(calls, 6);
+});
