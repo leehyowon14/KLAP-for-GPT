@@ -87,6 +87,7 @@ MCP Events의 전체 원본 조회는 이 필터나 cursor를 사용하지 않�
 
 - core 전체 회귀 테스트, klas/app/core race 검사 통과.
 - 서버 전체 `go test -race ./...` 통과. MCP count 인수 거부·인증별 cursor·동일 cursor 재시도·유니코드 조각 복원 검증.
+- Linux arm64 서버 바이너리 및 macOS Go Bridge 빌드 통과. KLAP-for-GPT와 KLAP_mac의 core 참조는 `af21383`으로 통일했다. Mac 네이티브 앱 전체 번들 빌드는 수행하지 않았다.
 - 웹 테스트 및 TypeScript/웹 빌드 통과. 인앱브라우저에서 v2 강의 요약과 공지의 지연 상세 표시 확인.
 - 패키지 검증 5개 통과. 플러그인 소스 버전 0.2.0.
 - 40개 강의 고정 fixture에서 최초 시작 동률 4개를 보존하면서 비교 응답 바이트 42,910 → 1,546 (96.4% 감소).
