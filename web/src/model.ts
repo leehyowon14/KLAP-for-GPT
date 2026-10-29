@@ -68,3 +68,9 @@ export function formatDate(raw: unknown, time = true) {
     timeZone: "Asia/Seoul",
   }).format(date);
 }
+
+export function paginate<T>(items: T[], requestedPage: number) {
+  const pages = Math.max(1, Math.ceil(items.length / 5));
+  const page = Math.min(pages, Math.max(1, Number.isFinite(requestedPage) ? Math.floor(requestedPage) : 1));
+  return { items: items.slice((page - 1) * 5, page * 5), page, pages };
+}

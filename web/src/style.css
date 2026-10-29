@@ -1433,3 +1433,5 @@ dd {
 }
 
 .dashboard-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.pagination { display: flex; justify-content: center; align-items: center; gap: 16px; padding-top: 18px; }

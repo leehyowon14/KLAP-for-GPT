@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { timetable, safeURL, selectedEligible, formatDate } from "./model";
+import { timetable, safeURL, selectedEligible, formatDate, paginate } from "./model";
 const entry = {
   SubjectID: "a",
   SubjectName: "수업",
@@ -51,4 +51,12 @@ test("a stale selection cannot attend a removed or newly ineligible lecture", ()
   );
   assert.equal(formatDate("not a date"), "—");
   assert.equal(formatDate("0001-01-01T00:00:00Z"), "—");
+});
+
+test("event pagination handles empty, exact, partial and stale pages", () => {
+  assert.deepEqual(paginate([], 1), {items: [], page: 1, pages: 1});
+  assert.equal(paginate([1,2,3,4,5], 1).pages, 1);
+  assert.deepEqual(paginate([1,2,3,4,5,6], 2), {items: [6], page: 2, pages: 2});
+  assert.equal(paginate([1], 9).page, 1);
+  for (const page of [-1, 0, NaN, Infinity]) assert.equal(paginate([1], page).page, 1);
 });

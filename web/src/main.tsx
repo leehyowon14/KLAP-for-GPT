@@ -15,6 +15,7 @@ import {
   formatDate,
   safeURL,
   selectedEligible,
+  paginate,
   timetable,
   type TimetableEntry,
 } from "./model";
@@ -106,6 +107,8 @@ function App() {
   const [detail, setDetail] = useState<Data>(),
     [detailBusy, setDetailBusy] = useState(false),
     [sync, setSync] = useState<Data>();
+  const [eventPage, setEventPage] = useState(1);
+  const eventHistory = paginate<Data>(state?.events?.recent || [], eventPage);
   const initialized = useRef(false);
   const detailElement = useRef<HTMLElement>(null);
   const detailRequest = useRef(0);
@@ -979,7 +982,7 @@ function App() {
                       <h2>이벤트 전달 기록</h2>
                     </div>
                     {state?.events?.recent?.length ? (
-                      state.events.recent.map((r: Data, i: number) => (
+                      eventHistory.items.map((r: Data, i: number) => (
                         <div className="row" key={i}>
                           <span className="kind neutral">
                             <Icon name="bell" />
@@ -999,6 +1002,13 @@ function App() {
                         title="아직 전달한 새 소식이 없어요"
                         description="구독 후 새로 등록되는 항목이 여기에 표시됩니다."
                       />
+                    )}
+                    {eventHistory.pages > 1 && (
+                      <nav className="pagination" aria-label="이벤트 기록 페이지">
+                        <button disabled={eventHistory.page === 1} onClick={() => setEventPage(eventHistory.page - 1)}>이전</button>
+                        <span aria-live="polite">{eventHistory.page} / {eventHistory.pages}</span>
+                        <button disabled={eventHistory.page === eventHistory.pages} onClick={() => setEventPage(eventHistory.page + 1)}>다음</button>
+                      </nav>
                     )}
                   </section>
                 </>
