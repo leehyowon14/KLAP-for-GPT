@@ -92,6 +92,8 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 		switch kind {
 		case "lectures":
 			return service.QueryLectures(ctx, user, intent)
+		case "assignments":
+			return service.QueryAssignments(ctx, user, intent)
 		}
 	}
 	switch kind {

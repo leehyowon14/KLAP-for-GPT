@@ -52,3 +52,12 @@ func TestAgentToolContractAndContinuation(t *testing.T) {
 		t.Fatalf("refetched: %v calls %d", r, backend.calls)
 	}
 }
+
+func TestAssignmentIntentMCP(t *testing.T) {
+	a, _, _ := testApp(t)
+	a.Backend = &agentBackend{}
+	r := rpc(t, a.MCP(), "tools/call", map[string]any{"name": "klap_assignments", "arguments": map[string]any{"intent": "pending"}})
+	if r["error"] != nil {
+		t.Fatalf("%v", r)
+	}
+}
