@@ -20,12 +20,19 @@ type Service struct {
 	syncMu     sync.Mutex
 }
 type Query struct {
-	Term     string `json:"term,omitempty"`
-	CourseID string `json:"course_id,omitempty"`
-	ID       string `json:"id,omitempty"`
-	Query    string `json:"query,omitempty"`
-	Days     int    `json:"days,omitempty"`
-	Year     string `json:"year,omitempty"`
+	Intent         string            `json:"intent,omitempty"`
+	CourseIDs      []string          `json:"course_ids,omitempty"`
+	IncludeExpired *bool             `json:"include_expired,omitempty"`
+	Period         *core.QueryPeriod `json:"period,omitempty"`
+	IDs            []string          `json:"ids,omitempty"`
+	Sections       []string          `json:"sections,omitempty"`
+	Cursor         string            `json:"cursor,omitempty"`
+	Term           string            `json:"term,omitempty"`
+	CourseID       string            `json:"course_id,omitempty"`
+	ID             string            `json:"id,omitempty"`
+	Query          string            `json:"query,omitempty"`
+	Days           int               `json:"days,omitempty"`
+	Year           string            `json:"year,omitempty"`
 }
 
 func (s *Service) user(ctx context.Context) (core.UserOption, error) {
@@ -79,6 +86,13 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 	service, e := s.Core.ForTerm(q.Term)
 	if e != nil {
 		return nil, e
+	}
+	if q.Intent != "" {
+		intent := core.AgentQuery{Intent: q.Intent, CourseIDs: q.CourseIDs, IncludeExpired: q.IncludeExpired, Period: q.Period}
+		switch kind {
+		case "lectures":
+			return service.QueryLectures(ctx, user, intent)
+		}
 	}
 	switch kind {
 	case "terms":
