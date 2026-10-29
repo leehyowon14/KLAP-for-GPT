@@ -3,15 +3,15 @@
 2026-10-27에 생성하고 2026-10-28에 클라우드 연결을 반영한 사용자 계정의 비공개 플러그인이다.
 
 - 이름: KLAP
-- 버전: `0.1.3`
+- 버전: `0.2.0`
 - Plugin ID: `plugins_6ae05a8b1af08191a7b593f119b7f914`
-- Release ID: `pluginrel_6ae1c7bb59ec8191b1e6803ad1385ab0`
+- Release ID: `pluginrel_6ae2a56c556c81918713fc5a9123777d`
 - [플러그인 열기](https://chatgpt.com/plugins/plugins_6ae05a8b1af08191a7b593f119b7f914)
 - MCP: `https://klap.leehyowon14.dev/mcp`
 
 **클라우드 도구 연결 확인:** 등록된 App 바인딩과 OAuth 연결을 반영했고, 실제
 `klap_open` 호출이 성공했다. ChatGPT 상세에는 도구 18개와 이벤트 3종이 표시됐다.
-활성 이벤트 구독은 0개이므로 자동 감지·에이전트 호출은 아직 활성화되지 않았다.
+초기 연결 당시 활성 이벤트 구독은 0개였다. 2026-10-29 조회에서는 기존 활성 구독 3개를 확인했다.
 검증 단계와 초기 문제는 [클라우드 연결 복구](CLOUD_CONNECTION.md)에 기록했다.
 
 저장 후 `get_plugin_files`로 스킬·매니페스트·아이콘과 생성된 호환 매니페스트를 확인했다.
@@ -52,3 +52,16 @@ KLAP_mac의 `KLAP-Mark.svg`와 `KLAP-Sparks.svg`를 조합한 로고로 대표 �
 로고·스킬·기본 프롬프트·Plugin ID·비공개 범위는 유지했고, 로컬 실행으로 분류되던
 직접 MCP 선언은 클라우드 패키지에서 제거했다. 직접 MCP export는 `--portable` 또는
 `--origin`으로 별도 생성한다. 패키징 테스트 5개와 저장 후 소스 재조회가 통과했다.
+
+## 0.2.0 의도별 조회 안내
+
+2026-10-29에 기존 release를 조건으로 Plugin Creator update를 적용했다.
+의도별 필터, unfinished의 include_expired 선택, 일괄 상세와 completion 조회,
+coverage/selection 및 cursor/fragment 처리 지침을 스킬에 반영했다.
+저장 후 get_plugin_files로 0.2.0과 새 release를 확인했다. 기존 App 바인딩은 동일하고,
+두 매니페스트는 버전 이외의 필드가 그대로이며 아이콘과 전체 파일 목록도 유지됐다.
+USER/PRIVATE 범위와 Plugin ID를 유지했다.
+
+운영 서버의 v2 도구를 실제 클라우드 연결로 호출한 결과는
+[Agent 조회 운영 검증](../docs/agent-query-production.md)에 기록했다.
+설치된 각 호스트의 스킬 캐시 갱신이나 자연어 도구 선택은 별도 확인 대상이다.
