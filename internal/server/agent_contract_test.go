@@ -79,3 +79,12 @@ func TestBatchDetailMCP(t *testing.T) {
 		t.Fatalf("%v", r)
 	}
 }
+
+func TestDueIntentMCP(t *testing.T) {
+	a, _, _ := testApp(t)
+	a.Backend = &agentBackend{}
+	r := rpc(t, a.MCP(), "tools/call", map[string]any{"name": "klap_due", "arguments": map[string]any{"intent": "next_deadline", "kinds": []string{"lecture"}}})
+	if r["error"] != nil {
+		t.Fatalf("%v", r)
+	}
+}

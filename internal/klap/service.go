@@ -20,6 +20,7 @@ type Service struct {
 	syncMu     sync.Mutex
 }
 type Query struct {
+	Kinds          []string          `json:"kinds,omitempty"`
 	Intent         string            `json:"intent,omitempty"`
 	CourseIDs      []string          `json:"course_ids,omitempty"`
 	IncludeExpired *bool             `json:"include_expired,omitempty"`
@@ -99,6 +100,8 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 			return service.QueryAssignments(ctx, user, intent)
 		case "notices":
 			return service.QueryNotices(ctx, user, intent)
+		case "due":
+			return service.QueryDue(ctx, user, intent, q.Kinds)
 		}
 	}
 	switch kind {
