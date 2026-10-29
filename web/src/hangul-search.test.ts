@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { matchesSearch, searchLearning } from "./hangul-search";
+import { matchesSearch, searchLearning, createLearningSearch } from "./hangul-search";
 
 test("Hangul search matches choseong, mixed and incomplete input", () => {
   for (const query of ["ㅈㄹㄱㅈ", "자료ㄱㅈ", "자료구ㅈ", "자료구", "자료 구조", "자료구조".normalize("NFD")])
