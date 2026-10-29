@@ -268,8 +268,11 @@ nav .icon {
   min-height: 42px;
   border-radius: 0;
 }
+.search:focus-within {
+  box-shadow: inset 0 0 0 2px #df4c4870;
+}
 .search input:focus-visible {
-  outline-offset: 3px;
+  outline: none;
 }
 .icon-button {
   padding: 10px;
