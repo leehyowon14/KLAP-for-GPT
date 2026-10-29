@@ -1,6 +1,6 @@
 # Agent 중심 조회 API 계획
 
-상태: 소스 구현 및 로컬 검증 완료, 운영 배포 전. 실제 계약과 검증 경계는 [Agent 조회 API v2](agent-query-api.md)를 참고한다.
+상태: 소스 구현, 로컬 검증 및 운영 배포 완료. 실제 계약은 [Agent 조회 API v2](agent-query-api.md), 클라우드 연결 검증과 경계는 [운영 검증 기록](agent-query-production.md)을 참고한다.
 
 기준: KLAP-for-GPT `555ee9a`, KLAP-core `68cb7d4`.
 목표는 답변의 정확성을 유지하면서 도구 선택, 모델에 전달되는 데이터, 상세 조회 왕복을 줄이는 것이다.
