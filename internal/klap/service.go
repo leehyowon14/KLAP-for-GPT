@@ -87,6 +87,9 @@ func (s *Service) Read(ctx context.Context, kind string, q Query) (any, error) {
 	if e != nil {
 		return nil, e
 	}
+	if kind == "get_items" {
+		return service.GetItems(ctx, user, q.IDs, q.Sections)
+	}
 	if q.Intent != "" {
 		intent := core.AgentQuery{Intent: q.Intent, CourseIDs: q.CourseIDs, IncludeExpired: q.IncludeExpired, Period: q.Period}
 		switch kind {

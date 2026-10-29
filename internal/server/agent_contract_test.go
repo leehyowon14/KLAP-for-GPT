@@ -70,3 +70,12 @@ func TestNoticeIntentMCP(t *testing.T) {
 		t.Fatalf("%v", r)
 	}
 }
+
+func TestBatchDetailMCP(t *testing.T) {
+	a, _, _ := testApp(t)
+	a.Backend = &agentBackend{}
+	r := rpc(t, a.MCP(), "tools/call", map[string]any{"name": "klap_get_items", "arguments": map[string]any{"ids": []string{"stable-id"}, "sections": []string{"completion"}}})
+	if r["error"] != nil {
+		t.Fatalf("%v", r)
+	}
+}

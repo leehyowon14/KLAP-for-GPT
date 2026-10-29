@@ -10,7 +10,7 @@ import (
 
 func isAgentTool(name string) bool {
 	switch strings.TrimPrefix(name, "klap_") {
-	case "lectures", "assignments", "notices":
+	case "lectures", "assignments", "notices", "get_items":
 		return true
 	}
 	return false

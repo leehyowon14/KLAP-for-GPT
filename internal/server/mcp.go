@@ -240,6 +240,7 @@ func (a *App) MCP() http.Handler {
 			add("klap_"+tool.name, tool.title, tool.description, schema(props, required...), true, nil)
 		}
 	}
+	add("klap_get_items", "선택 항목 일괄 상세", "Read exact stable IDs together. completion checks fresh lecture completion; content, learning, submission, attachments return selected sections only. Continue with cursor alone.", agentSchema("get_items"), true, nil)
 	add("klap_start_attendance", "수강 시작", "Queue the lectures the user explicitly asked to attend. Returns immediately. Reuse an idempotency key when retrying the same request. Completion must be checked with the job tool.", schema(map[string]any{"ids": map[string]any{"type": "array", "items": map[string]string{"type": "string"}, "minItems": 1, "maxItems": 100}, "idempotency_key": stringField("Unique key (8–128 characters) for this requested batch; preserve it on retries.")}, "ids", "idempotency_key"), false, nil)
 	add("klap_attendance_job", "수강 진행 확인", "Read actual queued/running/completed/failed/cancelled/interrupted status.", schema(map[string]any{"job_id": stringField("Job ID returned by start attendance.")}, "job_id"), true, nil)
 	add("klap_cancel_attendance", "수강 취소", "Cancel the specified attendance job and stop before the next lecture.", schema(map[string]any{"job_id": stringField("Job ID.")}, "job_id"), false, nil)
