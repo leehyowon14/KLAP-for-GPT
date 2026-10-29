@@ -34,7 +34,6 @@ export function AssetCredits() {
     <details className="asset-credits">
       <summary>디자인 에셋 안내</summary>
       <div>
-        <p>KLAP 로고 · KLAP_mac의 기존 브랜드 에셋</p>
         <p>토스페이스(Tossface) · 토스팀(비바리퍼블리카) 제공 · v1.6.1</p>
         <p><a href="https://github.com/toss/tossface" target="_blank" rel="noreferrer">원본 저장소</a> · <a href="https://toss.im/tossface/copyright" target="_blank" rel="noreferrer">저작권 안내</a></p>
         <pre>{license}</pre>

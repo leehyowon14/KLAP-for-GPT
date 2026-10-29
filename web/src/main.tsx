@@ -33,7 +33,7 @@ type View =
   | "settings"
   | "search";
 const nav: [View, string, string][] = [
-  ["home", "한눈에 보기", "home"],
+  ["home", "대시보드", "home"],
   ["assignments", "과제", "check"],
   ["lectures", "온라인 강의", "play"],
   ["notices", "공지사항", "bell"],
@@ -407,7 +407,7 @@ function App() {
               <span className="eyebrow">
                 {view === "home" ? "나의 캠퍼스" : "캠퍼스 라이프"}
               </span>
-              <h1>{view === "home" ? "오늘, 챙겨야 할 것들" : heading}</h1>
+              <h1>{view === "home" ? "대시보드" : heading}</h1>
               <p>
                 {view === "home"
                   ? "마감과 새 소식, 수업의 흐름을 함께 확인하세요."
@@ -497,9 +497,9 @@ function App() {
                 <>
                   {view === "home" && data && (
                     <>
-                      <div className="stats">
+                      <div className="stats dashboard-stats">
                         <Stat
-                          label="다가오는 마감"
+                          label="다가오는 일정"
                           value={(data.Items || []).length}
                           note="앞으로 14일"
                           icon="calendar"
@@ -510,17 +510,11 @@ function App() {
                           note="대기 · 수강 중"
                           icon="play"
                         />
-                        <Stat
-                          label="새 소식 구독"
-                          value={state?.events?.active_subscriptions || 0}
-                          note="공지 · 과제 · 강의"
-                          icon="activity"
-                        />
                       </div>
                       <section className="card">
                         <div className="section-title">
                           <h2>
-                            다가오는 마감{" "}
+                            다가오는 일정{" "}
                             <span>{(data.Items || []).length}</span>
                           </h2>
                           <span className="muted">14일 이내</span>
@@ -567,7 +561,7 @@ function App() {
                           </div>
                         ) : (
                           <Empty
-                            title="다가오는 마감이 없어요"
+                            title="다가오는 일정이 없어요"
                             description="앞으로 14일 동안의 과제와 강의 마감을 확인했습니다."
                           />
                         )}
@@ -604,7 +598,6 @@ function App() {
                         <h2>
                           과제 <span>{data.length}</span>
                         </h2>
-                        <span className="muted">제출 여부는 KLAS 기준</span>
                       </div>
                       {data.length ? (
                         data.map((r: Data) => (
@@ -956,34 +949,28 @@ function App() {
                         모니터링 요청
                       </button>
                     ) : (
-                      <span className="badge neutral">채팅에서 구독 요청</span>
+                      <button
+                        onClick={() => setNotice('ChatGPT에서 KLAP을 연결한 뒤 “KLAP의 새 공지·과제·강의를 감지하면 알려줘”라고 요청해 주세요.')}
+                      >모니터링 설정 안내</button>
                     )}
                   </div>
                   <div className="stats">
                     <Stat
                       label="활성 구독"
                       value={state?.events?.active_subscriptions || 0}
-                      note="만료 전에 호스트가 갱신"
                       icon="bell"
                     />
                     <Stat
                       label="전달 대기"
                       value={state?.events?.pending_deliveries || 0}
-                      note="실패 시 재시도"
                       icon="activity"
                     />
                     <Stat
                       label="최근 확인"
                       value={formatDate(state?.events?.last_scan)}
-                      note="성공한 조회 기준"
                       icon="refresh"
                     />
                   </div>
-                  <p className="muted note">
-                    에이전트 자동 호출은 MCP Events를 지원하는 클라우드
-                    호스트에서 동작합니다. ‘호스트 수신’은 webhook 수신
-                    결과이며, 에이전트 실행 완료와는 별개입니다.
-                  </p>
                   {state?.events?.last_error && (
                     <p className="alert">{state.events.last_error}</p>
                   )}
@@ -1032,7 +1019,7 @@ function App() {
           <footer>
             <AssetCredits />
             <span>
-              <span className="dot" /> KLAP · 나의 학습 공간
+              KLAP · 나의 학습 공간
             </span>
             {updated && <span>{formatDate(updated)} 조회</span>}
           </footer>
@@ -1108,7 +1095,7 @@ function Stat({
 }: {
   label: string;
   value: React.ReactNode;
-  note: string;
+  note?: string;
   icon: string;
 }) {
   return (
@@ -1120,7 +1107,7 @@ function Stat({
       <strong className={typeof value === "number" ? "" : "stat-text"}>
         {value}
       </strong>
-      <small>{note}</small>
+      {note && <small>{note}</small>}
     </div>
   );
 }
