@@ -1,3 +1,4 @@
+import { displayQuery, queryWarning } from "./agent-query";
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -233,13 +234,15 @@ function App() {
     setLoading(true);
     const tool = view === "home" ? "due" : view;
     const args: Data = term ? { term } : {};
-    if (["notices", "assignments", "lectures"].includes(view) && course)
-      args.course_id = course;
+    if (["notices", "assignments", "lectures"].includes(view)) {
+ args.intent = "overview"; if (course) args.course_ids = [course];
+ }
     if (view === "search") args.query = search;
     call(`klap_${tool}`, args)
       .then((r) => {
         if (active) {
-          setData(r.data);
+          setData(displayQuery(tool, r.data));
+          setNotice(queryWarning(r.data));
           setUpdated(r.retrieved_at);
         }
       })
@@ -270,8 +273,10 @@ function App() {
     setDetailBusy(true);
     setDetail({});
     try {
-      const r = await call(`klap_${kind}_detail`, { id });
-      if (request === detailRequest.current) setDetail(r.data);
+      const r = await call("klap_get_items", { ids: [id], sections: kind === "assignment" ? ["content", "submission"] : ["content"] });
+      const item=r.data.items[0];
+      if (item?.status !== "ok") throw new Error(item?.status === "not_found" ? "항목을 찾을 수 없습니다." : "상세 조회에 실패했습니다.");
+      if (request === detailRequest.current) setDetail({CourseName:item.course_id, Detail:{Title:item.title,ContentText:item.sections?.content,SubmittedText:item.sections?.submission?.submitted_text}});
     } catch (e) {
       if (request === detailRequest.current)
         setDetail({ error: (e as Error).message });
@@ -356,7 +361,6 @@ function App() {
           <div className="core-mark">
             <span className={`dot ${connected ? "online" : ""}`} />
             {connected ? "KLAS 연결됨" : "KLAS 연결 필요"}
-            <small>수업의 흐름을 한곳에서</small>
           </div>
           <button
             className={view === "settings" ? "active" : ""}
@@ -625,7 +629,7 @@ function App() {
                             <span
                               className={`badge ${r.Assignment.Submitted ? "green" : "neutral"}`}
                             >
-                              {r.Assignment.Submitted ? "제출 완료" : "미제출"}
+                              {r.Assignment.SubmissionStatus === "unknown" ? "제출 여부 미확인" : r.Assignment.Submitted ? "제출 완료" : "미제출"}
                             </span>
                             <Icon name="arrow" />
                           </button>
