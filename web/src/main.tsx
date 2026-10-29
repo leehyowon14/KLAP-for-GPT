@@ -236,6 +236,7 @@ function App() {
     setLoading(true);
     const tool = view === "home" ? "due" : view;
     const args: Data = term ? { term } : {};
+    if (view === "home") { args.intent="in_period"; args.period={name:"custom",from:new Date().toISOString(),until:new Date(Date.now()+14*24*60*60*1000).toISOString()}; }
     if (["notices", "assignments", "lectures"].includes(view)) {
  args.intent = "overview"; if (course) args.course_ids = [course];
  }

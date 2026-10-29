@@ -1,3 +1,4 @@
+import { displayQuery, queryWarning } from "./agent-query";
 import { disassemble, getChoseong } from "es-hangul";
 
 type Data = Record<string, any>;
@@ -34,7 +35,11 @@ export async function searchLearning(query: string, term: string, call: Call) {
   // KLAS shares a session, so avoid overlapping requests.
   for (const [tool, kind, section] of sources) {
     try {
-      const result = await call(`klap_${tool}`, term ? { term } : {});
+      const args:Data=term?{term}:{};
+      if (["lectures","assignments","notices"].includes(tool)) args.intent="overview";
+      const result = await call(`klap_${tool}`, args);
+      const warning=queryWarning(result.data);if (warning) data.Errors.push({Section:section,Error:warning});
+      result.data=displayQuery(tool,result.data);
       let rows: Data[];
       if (tool === "courses") rows = result.data.flatMap((t: Data) =>
         (!term || t.value === term) ? (t.subjList || []).map((Course: Data) => ({ Course, Term: t })) : []);

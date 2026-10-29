@@ -20,7 +20,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-const uiURI = "ui://klap/dashboard-v1"
+const uiURI = "ui://klap/dashboard-v2"
 
 type Backend interface {
 	Account(context.Context) (string, error)

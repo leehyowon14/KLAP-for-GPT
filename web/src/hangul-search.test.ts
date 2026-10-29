@@ -18,7 +18,7 @@ test("Hangul search matches choseong, mixed and incomplete input", () => {
 test("search fetches unfiltered sources sequentially and preserves partial errors", async () => {
   const calls: string[] = [];
   const result = await searchLearning("ㅈㄹㄱㅈ", "2026,2", async (name, args) => {
-    assert.deepEqual(args, {term:"2026,2"});
+    assert.deepEqual(args, ["klap_assignments","klap_notices","klap_lectures"].includes(name) ? {term:"2026,2",intent:"overview"} : {term:"2026,2"});
     calls.push(name);
     if (name === "klap_notices") throw new Error("공지 조회 실패");
     const data = name === "klap_courses" ? [{value:"2026,2",subjList:[{name:"자료구조"}]}, {value:"2026,1",subjList:[{name:"자료구조"}]}]

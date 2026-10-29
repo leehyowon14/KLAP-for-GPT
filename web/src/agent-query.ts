@@ -33,6 +33,7 @@ export function queryWarning(data: Data): string {
 export function displayQuery(kind: string, data: any): any {
   if (!data?.items || !data?.query) return data;
   const names = data.courses || {};
+  if (kind === "due") return { Items:data.items.map((item:Data)=>({ID:item.id,Kind:({lecture:"강의",assignment:"과제",academic:"학사일정"} as Data)[item.kind],Title:item.title,CourseName:names[item.course_id],DueAt:item.end_at,Status:item.completion?.status === "unknown" || item.submitted === "unknown" ? "상태 미확인" : ""})), Errors:[] };
   return data.items.map((item: Data) => {
     const common = { ID: item.id, CourseName: names[item.course_id] || item.course_id, TermValue: data.query.term };
     if (kind === "lectures") return { row: { ...common, Lecture: {
