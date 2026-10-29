@@ -114,7 +114,7 @@ func TestMCP2DiscoveryToolsAndEvents(t *testing.T) {
 		}
 		if tool["name"] == "klap_open" {
 			meta := tool["_meta"].(map[string]any)
-			if meta["ui"].(map[string]any)["resourceUri"] != uiURI {
+			if meta["ui"].(map[string]any)["resourceUri"] != uiResourceURI(app.HTML) {
 				t.Fatal("UI resource missing")
 			}
 		}
@@ -131,7 +131,7 @@ func TestMCP2DiscoveryToolsAndEvents(t *testing.T) {
 	if output["error"] == nil {
 		t.Fatal("schema range not enforced")
 	}
-	output = rpc(t, handler, "resources/read", map[string]any{"uri": uiURI})
+	output = rpc(t, handler, "resources/read", map[string]any{"uri": uiResourceURI(app.HTML)})
 	contents := output["result"].(map[string]any)["contents"].([]any)
 	if !strings.Contains(contents[0].(map[string]any)["text"].(string), "KLAP") {
 		t.Fatal("UI resource empty")
@@ -160,5 +160,17 @@ func TestMCPCallbackErrorAndTransportAuthentication(t *testing.T) {
 	handler.ServeHTTP(rec, req)
 	if rec.Code != 403 {
 		t.Fatal("unconfigured host accepted")
+	}
+}
+
+func TestUIResourceURITracksBundleChanges(t *testing.T) {
+	original := uiResourceURI("<html>KLAP</html>")
+	if original != uiResourceURI("<html>KLAP</html>") {
+		t.Fatal("identical bundles must share the URI")
+	}
+	for _, changed := range []string{"", "<html>KLAP</html> ", "<html>KLAP<style>input{outline:none}</style></html>"} {
+		if original == uiResourceURI(changed) {
+			t.Fatal("changed bundles must invalidate the host cache")
+		}
 	}
 }
